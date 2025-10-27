@@ -1,0 +1,7 @@
+[0m
+
+[ERRORS]
+Traceback (most recent call last):
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_bert_native.py", line 11, in <module>
+    from transformers import BertTokenizerFast, BertForSequenceClassification, AdamW
+ImportError: cannot import name 'AdamW' from 'transformers' (C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\transformers\__init__.py)

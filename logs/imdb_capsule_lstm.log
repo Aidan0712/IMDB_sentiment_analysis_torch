@@ -1,0 +1,36 @@
+torch.Size([512, 64, 256])
+torch.Size([512, 64, 256])
+torch.Size([1, 256, 1280])
+torch.Size([512, 64, 1280])
+[0m
+
+[ERRORS]
+2025-10-26 22:46:03,498: INFO: running D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_capsule_lstm.py
+2025-10-26 22:46:03,498: INFO: loading data...
+2025-10-26 22:46:03,935: INFO: data loaded!
+
+Epoch 0:   0%|          | 0/313 [00:00<?, ?it/s]
+Epoch 0:   0%|          | 0/313 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_capsule_lstm.py", line 148, in <module>
+    score = net(feature)
+            ^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_capsule_lstm.py", line 101, in forward
+    capsule = self.capsule(states)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_capsule_lstm.py", line 56, in forward
+    u_hat_vecs = u_hat_vecs.view((batch_size, input_num_capsule,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: shape '[512, 64, 5, 5]' is invalid for input of size 41943040

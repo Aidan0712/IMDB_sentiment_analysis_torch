@@ -1,0 +1,7 @@
+﻿file,accuracy
+attention_lstm.csv,0.86168
+cnnlstm.csv,0.83648
+cnn.csv,0.77256
+gru.csv,0.76368
+capsule_lstm.csv,0.5
+lstm.csv,0.5
