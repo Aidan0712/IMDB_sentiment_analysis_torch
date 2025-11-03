@@ -1,6 +1,13 @@
 ﻿file,accuracy
+roberta_trainer.csv,0.95404
+bert_trainer.csv,0.93664
+bert_scratch.csv,0.93352
+distilbert_trainer.csv,0.92828
+distilbert_native.csv,0.91252
+bert_native.csv,0.90088
 attention_lstm.csv,0.86168
 cnnlstm.csv,0.83648
+transformer.csv,0.83208
 cnn.csv,0.77256
 gru.csv,0.76368
 capsule_lstm.csv,0.5

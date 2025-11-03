@@ -4,22 +4,22 @@ import os
 base_dir = r"D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch"
 
 scripts = [
-    "imdb_cnn.py",
-    "imdb_lstm.py",
-    "imdb_gru.py",
-    "imdb_cnnlstm.py",
-    "imdb_attention_lstm.py",
-    "imdb_capsule_lstm.py",
+    # "imdb_cnn.py",
+    # "imdb_lstm.py",
+    # "imdb_gru.py",
+    # "imdb_cnnlstm.py",
+    # "imdb_attention_lstm.py",
+    # "imdb_capsule_lstm.py",
 
 
     "imdb_transformer.py",
-    "imdb_bert_trainer.py",
-    "imdb_bert_native.py",
-    "imdb_bert_scratch.py",
-    "imdb_roberta_trainer.py",
+    # "imdb_bert_trainer.py",
+    # "imdb_bert_native.py",
+    # "imdb_bert_scratch.py",
+    # "imdb_roberta_trainer.py",
 
-    "imdb_distilbert_trainer.py",
-    "imdb_distilbert_native.py",
+    # "imdb_distilbert_trainer.py",
+    # "imdb_distilbert_native.py",
 ]
 
 # 运行循环

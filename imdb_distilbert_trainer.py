@@ -65,7 +65,7 @@ if __name__ == '__main__':
         logging_dir='./logs',  # directory for storing logs
         logging_steps=100,
         save_strategy="no",
-        evaluation_strategy="epoch"
+        eval_strategy="epoch"
     )
 
     trainer = Trainer(
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     trainer.train()
 
     prediction_outputs = trainer.predict(tokenized_test)
-    test_pred = np.argmax(prediction_outputs[0], axis=-1).flatten()
+    test_pred = np.argmax(prediction_outputs.predictions, axis=-1).flatten()
     print(test_pred)
 
     result_output = pd.DataFrame(data={"id": test["id"], "sentiment": test_pred})

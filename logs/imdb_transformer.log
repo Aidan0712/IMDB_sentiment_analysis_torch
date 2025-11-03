@@ -1,52 +1,118 @@
-tensor([[ 3,  4,  2,  ...,  0,  0,  0],
-        [ 3,  4,  2,  ...,  0,  0,  0],
-        [ 3,  4, 15,  ...,  0,  0,  0],
-        ...,
-        [12, 13, 15,  ...,  0,  0,  0],
-        [ 1,  4,  6,  ...,  0,  0,  0],
-        [25, 19, 12,  ...,  0,  0,  0]]) tensor([ 617, 1839,  630, 2244, 1514,  721,  805,  871,  990, 3245,  923,  646,
-         893, 1764, 1431, 1479,  542, 1398, 1556,  646,  810, 1393,  312,  797,
-        1040, 2324,  668, 1454, 2919,  161,  911,  846, 1443, 4515,  370,  778,
-         864, 1615, 1107, 2952, 1090, 1698, 5552,  559, 1082,  988, 1094,  735,
-         777,  394,  626,  836, 3472,  720, 1416,  562, 4531,  500,  962, 1624,
-        2509,  766, 1385, 1635]) tensor([0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0,
-        1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1,
-        0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1])
+Using device: cuda
 [0m
 
 [ERRORS]
-2025-10-26 22:46:12,731: INFO: running D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py
-D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py:46: MarkupResemblesLocatorWarning:
+2025-11-03 11:45:12,271: INFO: running D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py
+2025-11-03 11:45:13,200: INFO: vocab size: 111883
+2025-11-03 11:45:13,214: INFO: train 20000, val 5000, test 25000
+2025-11-03 11:45:13,214: INFO: max sequence length (capped): 2000
 
-The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.
-
-C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\transformer.py:392: UserWarning:
-
-enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
-
-
-Epoch 0:   0%|          | 0/313 [00:00<?, ?it/s]
-Epoch 0:   0%|          | 0/313 [00:00<?, ?it/s]
+Epoch 0:   0%|          | 0/625 [00:00<?, ?it/s]
+Epoch 0:   0%|          | 0/625 [00:00<?, ?it/s, train loss=0.6862, train acc=0.5312]
+Epoch 0:   0%|          | 1/625 [00:00<07:06,  1.46it/s, train loss=0.6862, train acc=0.5312]
+Epoch 0:   0%|          | 1/625 [00:01<07:06,  1.46it/s, train loss=0.6700, train acc=0.5469]
+Epoch 0:   0%|          | 2/625 [00:01<04:54,  2.12it/s, train loss=0.6700, train acc=0.5469]
+Epoch 0:   0%|          | 2/625 [00:01<04:54,  2.12it/s, train loss=0.6982, train acc=0.5104]
+Epoch 0:   0%|          | 3/625 [00:01<04:35,  2.26it/s, train loss=0.6982, train acc=0.5104]
+Epoch 0:   0%|          | 3/625 [00:01<04:35,  2.26it/s, train loss=0.7117, train acc=0.4766]
+Epoch 0:   1%|          | 4/625 [00:01<04:29,  2.30it/s, train loss=0.7117, train acc=0.4766]
+Epoch 0:   1%|          | 4/625 [00:03<04:29,  2.30it/s, train loss=0.7073, train acc=0.5000]
+Epoch 0:   1%|          | 5/625 [00:03<07:41,  1.34it/s, train loss=0.7073, train acc=0.5000]
+Epoch 0:   1%|          | 5/625 [00:03<07:41,  1.34it/s, train loss=0.7070, train acc=0.4896]
+Epoch 0:   1%|          | 6/625 [00:03<06:19,  1.63it/s, train loss=0.7070, train acc=0.4896]
+Epoch 0:   1%|          | 6/625 [00:03<06:19,  1.63it/s, train loss=0.7027, train acc=0.4955]
+Epoch 0:   1%|          | 7/625 [00:03<05:11,  1.98it/s, train loss=0.7027, train acc=0.4955]
+Epoch 0:   1%|          | 7/625 [00:03<05:11,  1.98it/s, train loss=0.7034, train acc=0.4961]
+Epoch 0:   1%|▏         | 8/625 [00:03<04:04,  2.52it/s, train loss=0.7034, train acc=0.4961]
+Epoch 0:   1%|▏         | 8/625 [00:04<04:04,  2.52it/s, train loss=0.7090, train acc=0.4861]
+Epoch 0:   1%|▏         | 9/625 [00:04<04:00,  2.56it/s, train loss=0.7090, train acc=0.4861]
+Epoch 0:   1%|▏         | 9/625 [00:04<04:00,  2.56it/s, train loss=0.7113, train acc=0.4875]
+Epoch 0:   2%|▏         | 10/625 [00:04<03:51,  2.66it/s, train loss=0.7113, train acc=0.4875]
+Epoch 0:   2%|▏         | 10/625 [00:04<03:51,  2.66it/s, train loss=0.7058, train acc=0.5085]
+Epoch 0:   2%|▏         | 11/625 [00:04<03:27,  2.96it/s, train loss=0.7058, train acc=0.5085]
+Epoch 0:   2%|▏         | 11/625 [00:08<03:27,  2.96it/s, train loss=0.7068, train acc=0.5078]
+Epoch 0:   2%|▏         | 12/625 [00:08<14:21,  1.41s/it, train loss=0.7068, train acc=0.5078]
+Epoch 0:   2%|▏         | 12/625 [00:09<14:21,  1.41s/it, train loss=0.7059, train acc=0.5048]
+Epoch 0:   2%|▏         | 13/625 [00:09<11:15,  1.10s/it, train loss=0.7059, train acc=0.5048]
+Epoch 0:   2%|▏         | 13/625 [00:14<11:15,  1.10s/it, train loss=0.7091, train acc=0.4955]
+Epoch 0:   2%|▏         | 14/625 [00:14<25:46,  2.53s/it, train loss=0.7091, train acc=0.4955]
+Epoch 0:   2%|▏         | 14/625 [00:15<25:46,  2.53s/it, train loss=0.7069, train acc=0.5000]
+Epoch 0:   2%|▏         | 15/625 [00:15<18:57,  1.87s/it, train loss=0.7069, train acc=0.5000]
+Epoch 0:   2%|▏         | 15/625 [00:15<18:57,  1.87s/it, train loss=0.7056, train acc=0.5020]
+Epoch 0:   3%|▎         | 16/625 [00:15<14:19,  1.41s/it, train loss=0.7056, train acc=0.5020]
+Epoch 0:   3%|▎         | 16/625 [00:17<14:19,  1.41s/it, train loss=0.7044, train acc=0.5110]
+Epoch 0:   3%|▎         | 17/625 [00:17<16:40,  1.65s/it, train loss=0.7044, train acc=0.5110]
+Epoch 0:   3%|▎         | 17/625 [00:20<16:40,  1.65s/it, train loss=0.7078, train acc=0.5017]
+Epoch 0:   3%|▎         | 18/625 [00:20<18:27,  1.82s/it, train loss=0.7078, train acc=0.5017]
+Epoch 0:   3%|▎         | 18/625 [00:20<18:27,  1.82s/it, train loss=0.7085, train acc=0.5000]
+Epoch 0:   3%|▎         | 19/625 [00:20<13:44,  1.36s/it, train loss=0.7085, train acc=0.5000]
+Epoch 0:   3%|▎         | 19/625 [00:22<13:44,  1.36s/it, train loss=0.7090, train acc=0.4953]
+Epoch 0:   3%|▎         | 20/625 [00:22<16:00,  1.59s/it, train loss=0.7090, train acc=0.4953]
+Epoch 0:   3%|▎         | 20/625 [00:23<16:00,  1.59s/it, train loss=0.7082, train acc=0.5000]
+Epoch 0:   3%|▎         | 21/625 [00:23<15:38,  1.55s/it, train loss=0.7082, train acc=0.5000]
+Epoch 0:   3%|▎         | 21/625 [00:26<15:38,  1.55s/it, train loss=0.7073, train acc=0.5014]
+Epoch 0:   4%|▎         | 22/625 [00:26<17:22,  1.73s/it, train loss=0.7073, train acc=0.5014]
+Epoch 0:   4%|▎         | 22/625 [00:28<17:22,  1.73s/it, train loss=0.7089, train acc=0.5000]
+Epoch 0:   4%|▎         | 23/625 [00:28<18:35,  1.85s/it, train loss=0.7089, train acc=0.5000]
+Epoch 0:   4%|▎         | 23/625 [00:28<18:35,  1.85s/it, train loss=0.7096, train acc=0.4987]
+Epoch 0:   4%|▍         | 24/625 [00:28<14:14,  1.42s/it, train loss=0.7096, train acc=0.4987]
+Epoch 0:   4%|▍         | 24/625 [00:30<14:14,  1.42s/it, train loss=0.7097, train acc=0.4963]
+Epoch 0:   4%|▍         | 25/625 [00:30<16:27,  1.65s/it, train loss=0.7097, train acc=0.4963]
+Epoch 0:   4%|▍         | 25/625 [00:30<16:27,  1.65s/it, train loss=0.7095, train acc=0.4976]
+Epoch 0:   4%|▍         | 26/625 [00:30<11:56,  1.20s/it, train loss=0.7095, train acc=0.4976]
+Epoch 0:   4%|▍         | 26/625 [00:31<11:56,  1.20s/it, train loss=0.7095, train acc=0.5012]
+Epoch 0:   4%|▍         | 27/625 [00:31<09:11,  1.08it/s, train loss=0.7095, train acc=0.5012]
+Epoch 0:   4%|▍         | 27/625 [00:31<09:11,  1.08it/s, train loss=0.7094, train acc=0.5022]
+Epoch 0:   4%|▍         | 28/625 [00:31<07:32,  1.32it/s, train loss=0.7094, train acc=0.5022]
+Epoch 0:   4%|▍         | 28/625 [00:31<07:32,  1.32it/s, train loss=0.7076, train acc=0.5086]
+Epoch 0:   5%|▍         | 29/625 [00:31<06:12,  1.60it/s, train loss=0.7076, train acc=0.5086]
+Epoch 0:   5%|▍         | 29/625 [00:33<11:36,  1.17s/it, train loss=0.7076, train acc=0.5086]
 Traceback (most recent call last):
-  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py", line 227, in <module>
-    score = net(feature, lengths)
-            ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py", line 269, in <module>
+    outputs = model(batch_inputs, batch_lengths)  # (batch, num_class) as log_probs
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
     return self._call_impl(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
     return forward_call(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py", line 145, in forward
-    hidden_states = self.position_embedding(hidden_states)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py", line 129, in forward
+    x = self.transformer_encoder(x, src_key_padding_mask=mask)  # (batch_size, seq_len, d_model)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
     return self._call_impl(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
     return forward_call(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch\imdb_transformer.py", line 124, in forward
-    x = x + self.pe[:x.size(0), :]
-        ~~^~~~~~~~~~~~~~~~~~~~~~~~
-RuntimeError: The size of tensor a (5552) must match the size of tensor b (128) at non-singleton dimension 0
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\transformer.py", line 524, in forward
+    output = mod(
+             ^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\transformer.py", line 937, in forward
+    x = self.norm2(x + self._ff_block(x))
+                       ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\transformer.py", line 962, in _ff_block
+    x = self.linear2(self.dropout(self.activation(self.linear1(x))))
+                                                  ^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Clumsy\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

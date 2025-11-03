@@ -14,6 +14,8 @@ from transformers import Trainer, TrainingArguments
 from transformers import BertPreTrainedModel, BertModel
 from transformers.modeling_outputs import SequenceClassifierOutput
 
+from transformers import BertConfig
+
 from sklearn.model_selection import train_test_split
 
 train = pd.read_csv("./word2vec-nlp-tutorial/labeledTrainData.tsv", header=0, delimiter="\t", quoting=3)
@@ -38,13 +40,15 @@ class BertScratch(BertPreTrainedModel):
     def forward(self, input_ids=None, attention_mask=None, token_type_ids=None, labels=None):
         outputs = self.bert(input_ids, attention_mask, token_type_ids)
 
-        pooled_output = outputs[1]
+        pooled_output = outputs.pooler_output
 
         pooled_output = self.dropout(pooled_output)
         logits = self.classifier(pooled_output)
 
-        loss_fct = nn.CrossEntropyLoss()
-        loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
+        loss = None
+        if labels is not None:
+            loss_fct = nn.CrossEntropyLoss()
+            loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
 
         return SequenceClassifierOutput(
             loss=loss,
@@ -85,13 +89,16 @@ if __name__ == '__main__':
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
-    model = BertScratch.from_pretrained('bert-base-uncased')
+    config = BertConfig.from_pretrained('bert-base-uncased', num_labels=2)
+    model = BertScratch.from_pretrained('bert-base-uncased', config=config)
 
     metric = evaluate.load("accuracy")
 
 
     def compute_metrics(eval_pred):
         logits, labels = eval_pred
+        if labels is None:
+            return {}  # 或者返回某个默认值
         predictions = np.argmax(logits, axis=-1)
         return metric.compute(predictions=predictions, references=labels)
 
@@ -106,7 +113,7 @@ if __name__ == '__main__':
         logging_dir='./logs',  # directory for storing logs
         logging_steps=100,
         save_strategy="no",
-        evaluation_strategy="epoch"
+        eval_strategy="epoch"
     )
 
     trainer = Trainer(
@@ -122,7 +129,7 @@ if __name__ == '__main__':
     trainer.train()
 
     prediction_outputs = trainer.predict(tokenized_test)
-    test_pred = np.argmax(prediction_outputs[0], axis=-1).flatten()
+    test_pred = np.argmax(prediction_outputs.predictions, axis=-1).flatten()
     print(test_pred)
 
     result_output = pd.DataFrame(data={"id": test["id"], "sentiment": test_pred})

@@ -7,6 +7,7 @@ import evaluate
 import pandas as pd
 import numpy as np
 
+
 from transformers import BertTokenizerFast, BertForSequenceClassification, DataCollatorWithPadding
 from transformers import Trainer, TrainingArguments
 from sklearn.model_selection import train_test_split
@@ -58,7 +59,8 @@ if __name__ == '__main__':
     training_args = TrainingArguments(
         output_dir='./checkpoint',  # output directory
         num_train_epochs=3,  # total number of training epochs
-        per_device_train_batch_size=16,  # batch size per device during training
+        per_device_train_batch_size=4,  # batch size per device during training
+        gradient_accumulation_steps=4,  # number of updates steps to accumulate before performing a backward/update pass
         per_device_eval_batch_size=32,  # batch size for evaluation
         warmup_steps=500,  # number of warmup steps for learning rate scheduler
         weight_decay=0.01,  # strength of weight decay
