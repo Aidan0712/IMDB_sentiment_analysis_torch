@@ -1,5 +1,7 @@
 ﻿file,accuracy
+deberta_ptuning_base.csv,0.95776
 roberta_trainer.csv,0.95404
+deberta_lora_base.csv,0.95364
 bert_trainer.csv,0.93664
 bert_scratch.csv,0.93352
 distilbert_trainer.csv,0.92828
@@ -10,5 +12,6 @@ cnnlstm.csv,0.83648
 transformer.csv,0.83208
 cnn.csv,0.77256
 gru.csv,0.76368
+deberta_prompt_base.csv,0.51532
 capsule_lstm.csv,0.5
 lstm.csv,0.5

@@ -5,3 +5,5 @@
 *.tsv
 
 *.log
+
+/models/
