@@ -48,16 +48,16 @@
 ### Supervised Contrastive Learning
 - 一句话理解：让相同label的距离更小，让不同label的距离更大
 
-### unsloth与compute_loss调整
+### unsloth
 - unsloth：自动优化模型的微调过程，使得在较少参数更新的情况下，能够更快速和高效地进行模型微调。
-- compute_loss调整
-  - 原Train调用方法```label_smoother()```：
 
+### compute_loss调整
+- 原Train调用方法```label_smoother()```：
 ```python
 loss = self.label_smoother(outputs, labels)
 ```
 
-  - 重写compute_loss调用```CrossEntropyLoss()```：
+- 重写compute_loss调用```CrossEntropyLoss()```：
 ```python
 class UnslothSafeTrainer(Trainer):
     def __init__(self, *args, **kwargs):
@@ -96,7 +96,7 @@ class UnslothSafeTrainer(Trainer):
         return loss
 ```
 
-  - 重写compute_loss调用```CrossEntropyLoss()```和```SupConLoss```，并授予权重：
+- 重写compute_loss调用```CrossEntropyLoss()```和```SupConLoss```，并授予权重：
 ```python
 class UnslothSafeTrainer(Trainer):
     def __init__(self, *args, **kwargs):
@@ -142,7 +142,7 @@ class UnslothSafeTrainer(Trainer):
             return total_loss, outputs
         return total_loss
 ```
-- compute_loss调整结果与分析
+- 结果与分析
   - 仅使用CrossEntropyLoss：相较于原Train的方法有大约0.6%的提升，说明使用传统交叉熵损失函数对二值分类任务确有提升
   - 同时使用使用CrossEntropyLoss和SupConLoss：相较于原Train的方法有微小提升，可能是SupConLoss更适用于多值分类任务，对于二值分类效果不明显
 
