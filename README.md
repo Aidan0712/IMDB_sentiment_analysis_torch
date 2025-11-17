@@ -52,7 +52,7 @@
 - unsloth：自动优化模型的微调过程，使得在较少参数更新的情况下，能够更快速和高效地进行模型微调。
 
 ### compute_loss调整
-- 原Train调用方法```label_smoother()```：
+- 原Trainer调用方法```label_smoother()```：
 ```python
 loss = self.label_smoother(outputs, labels)
 ```
@@ -143,8 +143,8 @@ class UnslothSafeTrainer(Trainer):
         return total_loss
 ```
 - 结果与分析
-  - 仅使用CrossEntropyLoss：相较于原Train的方法有大约0.6%的提升，说明使用传统交叉熵损失函数对二值分类任务确有提升
-  - 同时使用使用CrossEntropyLoss和SupConLoss：相较于原Train的方法有微小提升，可能是SupConLoss更适用于多值分类任务，对于二值分类效果不明显
+  - 仅使用CrossEntropyLoss：相较于原Trainer的方法有大约0.6%的提升，说明使用传统交叉熵损失函数对二值分类任务确有提升
+  - 同时使用使用CrossEntropyLoss和SupConLoss：相较于原Trainer的方法有微小提升，可能是SupConLoss更适用于多值分类任务，对于二值分类效果不明显
 
 
 
