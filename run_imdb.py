@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-base_dir = r"D:\2025Autumn\Scientific Research Training\Task3\imdb_sentiment_analysis_torch"
+base_dir = os.path.dirname(__file__)
 
 scripts = [
     # "imdb_cnn.py",
@@ -22,10 +22,14 @@ scripts = [
     # "imdb_distilbert_native.py",
 
     # "imdb_deberta_lora.py",
-    "imdb_deberta_prompt.py",
+    # "imdb_deberta_prompt.py",
     # "imdb_deberta_prefix.py",
     # "imdb_deberta_ptuning.py",
 
+    # "imdb_modernbert_unsloth.py",
+    # "imdb_bert_rdrop.py",
+    # "imdb_bert_scl_trainer.py",
+    "imdb_modernbert_unsloth_celoss.py"
 ]
 # 运行循环
 for script in scripts:

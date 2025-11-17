@@ -3,9 +3,11 @@
 ## 本周准确率表格（按准确率排序）
 | **file** | **accuracy** |
 | :---: | :---: |
-| deberta_ptuning_base | 0.95776 |
-| deberta_lora_base | 0.95364 |
-| deberta_prompt_base | 0.51532 |
+| deberta_unsloth_celoss | 0.94316 |
+| bert_rdorp | 0.94028 |
+| bert_scl_trainer | 0.9396 |
+| deberta_unsloth_ce_sc | 0.93748 |
+| deberta_unsloth | 0.93612 |
 
 ## 总准确率统计表格 (按准确率排序)
 | **file** | **accuracy** |
@@ -13,7 +15,12 @@
 | deberta_ptuning_base | 0.95776 |
 | roberta_trainer | 0.95404 |
 | deberta_lora_base | 0.95364 |
+| deberta_unsloth_celoss | 0.94316 |
+| bert_rdorp | 0.94028 |
+| bert_scl_trainer | 0.9396 |
+| deberta_unsloth_ce_sc | 0.93748 |
 | bert_trainer | 0.93664 |
+| deberta_unsloth | 0.93612 |
 | bert_scratch | 0.93352 |
 | distilbert_trainer | 0.92828 |
 | distilbert_native | 0.91252 |
@@ -24,8 +31,121 @@
 | cnn | 0.77256 |
 | gru | 0.76368 |
 | deberta_prompt_base | 0.51532 |
-| capsule_lstm | 0.5 |
 | lstm | 0.5 |
+| capsule_lstm | 0.5 |
+
+## 11.17 进度
+- 完成Regularized Dropout和Supervised Contrastive Learning方法的运行和准确率统计
+- 完成unsloth环境的配置和示例UnslothSafeTrainer封装的运行
+- 在UnslothSafeTrainer的基础上，加入了compute_loss损失计算方法的重写，尝试了两种重写：
+  - 选择调用适合分类任务的torch.nn中的传统CrossEntropyLoss交叉熵损失函数
+  - 同时调用CrossEntropyLoss和所给losses中的SupConLoss方法，并然后加权组合输出
+- 完成R-Drop和Supervised Contrastive Learning的B站论文讲解
+
+### R-Drop
+- 一句话理解：在Dropout随机丢弃神经元，提高泛化能力的基础上，调整丢弃率或引入额外约束来增强正则化
+
+### Supervised Contrastive Learning
+- 一句话理解：让相同label的距离更小，让不同label的距离更大
+
+### unsloth与compute_loss调整
+- unsloth：自动优化模型的微调过程，使得在较少参数更新的情况下，能够更快速和高效地进行模型微调。
+- compute_loss调整
+  - 原Train调用方法```label_smoother()```：
+
+```python
+loss = self.label_smoother(outputs, labels)
+```
+
+  - 重写compute_loss调用```CrossEntropyLoss()```：
+```python
+class UnslothSafeTrainer(Trainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.loss_fn = None
+        self._num_labels = None
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        labels = inputs.get("labels", None)
+
+        outputs = model(**inputs)
+
+        if labels is None:
+            return super().compute_loss(model, inputs, return_outputs)
+
+        logits = outputs.logits
+
+        if self.loss_fn is None:
+            if hasattr(model.config, 'num_labels'):
+                self._num_labels = model.config.num_labels
+            else:
+                self._num_labels = logits.size(-1)
+            self.loss_fn = nn.CrossEntropyLoss()
+
+        if logits.size(-1) != self._num_labels:
+            self._num_labels = logits.size(-1)
+            self.loss_fn = nn.CrossEntropyLoss()
+
+        loss = self.loss_fn(
+            logits.contiguous().view(-1, self._num_labels),
+            labels.contiguous().view(-1)
+        )
+
+        if return_outputs:
+            return loss, outputs
+        return loss
+```
+
+  - 重写compute_loss调用```CrossEntropyLoss()```和```SupConLoss```，并授予权重：
+```python
+class UnslothSafeTrainer(Trainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.loss_fn = None
+        self.sc_loss = SupConLoss(temperature=0.07)
+        self._num_labels = None
+        self.alpha = 0.1 # 为两个loss方法授予权重
+        self.beta = 0.9
+
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        labels = inputs.get("labels", None)
+
+        outputs = model(**inputs)
+
+        if labels is None:
+            return super().compute_loss(model, inputs, return_outputs)
+
+        logits = outputs.logits
+
+        if self.loss_fn is None:
+            if hasattr(model.config, 'num_labels'):
+                self._num_labels = model.config.num_labels
+            else:
+                self._num_labels = logits.size(-1)
+            self.loss_fn = nn.CrossEntropyLoss()
+
+        if logits.size(-1) != self._num_labels:
+            self._num_labels = logits.size(-1)
+            self.loss_fn = nn.CrossEntropyLoss()
+
+        ce_loss = self.loss_fn(
+            logits.contiguous().view(-1, self._num_labels),
+            labels.contiguous().view(-1)
+        )
+
+        sc_loss = self.sc_loss(logits, labels)
+
+        total_loss = self.alpha * sc_loss + self.beta * ce_loss
+
+        if return_outputs:
+            return total_loss, outputs
+        return total_loss
+```
+- compute_loss调整结果与分析
+  - 仅使用CrossEntropyLoss：相较于原Train的方法有大约0.6%的提升，说明使用传统交叉熵损失函数对二值分类任务确有提升
+  - 同时使用使用CrossEntropyLoss和SupConLoss：相较于原Train的方法有微小提升，可能是SupConLoss更适用于多值分类任务，对于二值分类效果不明显
+
 
 
 ## 11.10 进度
