@@ -29,7 +29,11 @@ scripts = [
     # "imdb_modernbert_unsloth.py",
     # "imdb_bert_rdrop.py",
     # "imdb_bert_scl_trainer.py",
-    "imdb_modernbert_unsloth_celoss.py"
+    # "imdb_modernbert_unsloth_celoss.py"
+
+    "imdb_sst2_deberta_loop.py",
+    # "imdb_sst2_deberta.py",
+    # "imdb_ollama_loop.py",
 ]
 # 运行循环
 for script in scripts:

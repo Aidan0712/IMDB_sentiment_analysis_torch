@@ -6,6 +6,7 @@ model_list = [
     "microsoft/deberta-v2-xxlarge",
     "microsoft/deberta-v3-large",
     "microsoft/deberta-v3-base",
+    "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
 ]
 
 # 本地保存根目录

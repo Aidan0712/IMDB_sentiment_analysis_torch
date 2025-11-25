@@ -6,4 +6,13 @@
 
 *.log
 
+/.idea/
+/.vscode/
 /models/
+/unsloth_compiled_cache/
+/checkpoint/
+/checkpoint_debug/
+/pickle/
+/result_save/
+/results_instruction_following_save/
+/word2vec-nlp-tutorial/
