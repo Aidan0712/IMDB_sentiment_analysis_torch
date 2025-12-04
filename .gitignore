@@ -8,11 +8,23 @@
 
 /.idea/
 /.vscode/
-/models/
-/unsloth_compiled_cache/
+
+
 /checkpoint/
 /checkpoint_debug/
+
+/logs/
+/model_output/
+/models/
+/models_save/
 /pickle/
+
 /result_save/
 /results_instruction_following_save/
+/results_instruction_tuning_save/
+
+/trainer_output/
+/unsloth_compiled_cache/
 /word2vec-nlp-tutorial/
+
+/unsloth/

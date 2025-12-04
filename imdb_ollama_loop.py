@@ -58,7 +58,7 @@ correct_count = 0
 result_dir = "./results_instruction_following"
 os.makedirs(result_dir, exist_ok=True)
 
-save_sizes = {16, 64, 256, 512}
+save_sizes = {16, 64, 256, 512, 1024}
 
 max_size = max(save_sizes)
 

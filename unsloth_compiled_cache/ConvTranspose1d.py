@@ -62,7 +62,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from typing import Any, List, Optional, Tuple, Union, Dict, Set, Callable
-from transformers.models.deberta_v2.modeling_deberta_v2 import (Sequence, Optional, nn)
+from transformers.models.gemma3.modeling_gemma3 import (Optional, nn)
 
 def forward(self, input: Tensor, output_size: Optional[list[int]] = None) -> Tensor:
     if self.padding_mode != "zeros":

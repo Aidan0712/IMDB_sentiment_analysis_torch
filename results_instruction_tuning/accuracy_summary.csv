@@ -1,0 +1,7 @@
+﻿file,accuracy,response_acc
+unsloth_lora_gemma3_1b.csv,0.856,0
+unsloth_lora_qwen3_1.7b.csv,0.518,183
+unsloth_lora_qwen3_4b.csv,0.516,222
+unsloth_lora_llama3.2_3b.csv,0.47,231
+unsloth_lora_llama3.2_1b.csv,0.302,258
+unsloth_lora_mistral_7b.csv,0.01,493

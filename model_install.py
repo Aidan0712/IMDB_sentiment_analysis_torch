@@ -1,40 +1,55 @@
-from transformers import AutoModel, AutoTokenizer
 import os
+from huggingface_hub import snapshot_download
+import logging
 
-# 模型列表
-model_list = [
-    "microsoft/deberta-v2-xxlarge",
-    "microsoft/deberta-v3-large",
-    "microsoft/deberta-v3-base",
-    "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# 设置镜像
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+MODELS_ALL = [
+    "unsloth/Llama-3.2-1B-Instruct-bnb-4bit",
+    "unsloth/gemma-3-1b-it-unsloth-bnb-4bit",
+    "unsloth/Qwen3-1.7B-unsloth-bnb-4bit",
+
+    "unsloth/Llama-3.2-3B-Instruct-bnb-4bit",
+    "unsloth/gemma-3-4b-it-unsloth-bnb-4bit",
+    "unsloth/Qwen3-4B-unsloth-bnb-4bit",
+    "unsloth/Phi-4-mini-instruct-unsloth-bnb-4bit",
+    "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
 ]
 
-# 本地保存根目录
-save_root = "./models"
+MODELS = [
+    "unsloth/Llama-3.2-1B-Instruct-bnb-4bit",
+    "unsloth/gemma-3-1b-it-unsloth-bnb-4bit",
+    "unsloth/Qwen3-1.7B-unsloth-bnb-4bit",
 
-# 确保根目录存在
-os.makedirs(save_root, exist_ok=True)
+    "unsloth/Llama-3.2-3B-Instruct-bnb-4bit",
+    "unsloth/gemma-3-4b-it-unsloth-bnb-4bit",
+    "unsloth/Qwen3-4B-unsloth-bnb-4bit",
+    "unsloth/Phi-4-mini-instruct-unsloth-bnb-4bit",
+    "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+]
 
-for model_name in model_list:
-    # 模型本地保存路径（将 / 替换为 _）
-    local_dir = os.path.join(save_root, model_name.replace("/", "_"))
 
-    # 检查模型是否已经下载（权重文件存在即可认为已下载）
-    model_file = os.path.join(local_dir, "pytorch_model.bin")
-    if os.path.exists(model_file):
-        print(f"{model_name} 已经存在，跳过下载。")
-        continue
+def preload_model(model_name):
+    """预加载模型到缓存"""
+    try:
+        logger.info(f"正在缓存: {model_name}")
+        local_path = snapshot_download(repo_id=model_name, local_dir=None, resume_download=True)
+        logger.info(f"模型已缓存到: {local_path}")
+        return True
 
-    print(f"正在下载模型: {model_name}")
-    os.makedirs(local_dir, exist_ok=True)
+    except Exception as e:
+        return False
 
-    # 下载模型
-    model = AutoModel.from_pretrained(model_name)
-    model.save_pretrained(local_dir)
 
-    # 下载分词器
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    tokenizer.save_pretrained(local_dir)
+if __name__ == "__main__":
+    logger.info("开始预加载Unsloth模型到缓存...")
 
-    print(f"{model_name} 已保存到 {local_dir}\n")
-print("所有模型下载完成！")
+    for model in MODELS:
+        preload_model(model)
+        print("-" * 50)
+
+    logger.info(f"预加载完成！")

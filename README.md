@@ -1,25 +1,133 @@
 # IMDB_sentiment_analysis_torch
 
-## DeBERTa-v3-base + LoRA 微调在 SST-2 上不同样本量的准确率
+## 本周准确率表格（按准确率大到小排序）
+| **model** | **mag** | **acc** | **resp_acc** | **acc_bf_train** | **resp_acc_bf_train** |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `unsloth/mistral-7b-instruct-v0.3-bnb-4bit` | 7B | 0.9474 | 1.0 | 0.01 | 0.014 |
+| `unsloth/Qwen3-4B-unsloth-bnb-4bit` | 4B | 0.9150 | 1.0 | 0.556 | 0.578 |
+| `unsloth/Llama-3.2-3B-Instruct-bnb-4bit` | 3B | 0.9050 | 1.0 | 0.478 | 0.55 |
+| `unsloth/Llama-3.2-1B-Instruct-bnb-4bit` | 1B | 0.8560 | 0.996 | 0.292 | 0.466 |
+| `unsloth/Qwen3-1.7B-unsloth-bnb-4bit` | 1.7B | 0.7820 | 0.896 | 0.546 | 0.642 |
+| `unsloth/gemma-3-1b-it-unsloth-bnb-4bit` | 1B | 0.6740 | 0.894 | 0.856 | 1.0 |
 
-| 样本数 | 16 | 64 | 256 | 1024 | 4096 | 8192 | 16384 | 全量 |
-|--------|------|------|--------|--------|---------|---------|----------|--------|
-| **准确率** | 44.98 | 44.98 | 44.98 | 44.98 | 91.33 | 92.52 | 92.93 | 94.46 |
+*PS：*
+***resp_acc：*** *模型输出中可以提取出**有效输出的比例***
+***acc：*** *准确率计算**包括无效输出样例***
 
-![alt text](<images/DeBERTa-v3-base + LoRA Accuracy on SST-2.png>)
 
-## Ollama 本地模型的指令学习在 SST-2 上不同数据量的准确率
+## 12.4 进度
+- 在autodl上部署并使用unsloth + lora完成六个模型的微调和准确率统计
+- 完成instruction tuning原理的学习
 
-| 模型 | 16 | 64 | 256 | 512 |
-|------|------|------|-------|------|
-| **DeepSeek-R1-8B** | 87.50 | 93.75 | 90.23 | 90.63 |
-| **Llama3.1-8B** | 81.25 | 90.97 | 90.36 | 89.16 |
-| **Qwen3-8B** | 89.23 | 89.52 | 89.84 | 89.97 |
-| **Gemma2-9B** | 90.01 | 90.00 | 90.07 | 89.79 |
-| **Phi-4-mini (3.8B)** | 89.78 | 89.87 | 89.32 | 85.51 |
-| **Mistral-7B** | 85.52 | 85.40 | 85.33 | 84.86 |
+### 模型选择与AutoDL部署
+- 模型选择：选择了Llama、Qwen、Gemma、Phi-4和Mistral中**unsloth 4bit量化**后的**1-7B**模型(按小到大排列)
+- AutoDL部署：使用一张RTX 4090作为GPU *（本想用5090，但是xformers一直报错，换了很多版本也没解决 (T_T)）*
 
-![alt text](<images/Ollama Local Models Accuracy on SST-2.png>)
+| **模型** | **参数量级** | **训练+推理大致用时** |
+| :--- | :---: | :---: |
+| `unsloth/Llama-3.2-1B-Instruct-bnb-4bit` | 1B | 1h |
+| `unsloth/gemma-3-1b-it-unsloth-bnb-4bit` | 1B | 1h |
+| `unsloth/Qwen3-1.7B-unsloth-bnb-4bit` | 1.7B | 1h |
+| `unsloth/Llama-3.2-3B-Instruct-bnb-4bit` | 3B | 2h |
+| `unsloth/Phi-4-mini-instruct-unsloth-bnb-4bit` | 3.8B | - |
+| `unsloth/gemma-3-4b-it-unsloth-bnb-4bit` | 4B | 训练：1h 推理: - |
+| `unsloth/Qwen3-4B-unsloth-bnb-4bit` | 4B | 2h |
+| `unsloth/mistral-7b-instruct-v0.3-bnb-4bit` | 7B | 3h |
+
+### 调整
+- 新版本的`SFTTrainer()`不再支持`dataset_num_proc`和`packing`参数，遂选择`SFTConfig()`代替`TrainingArguments()`来传入所需参数
+```python
+sft_config = SFTConfig(
+    output_dir="model_output",
+    per_device_train_batch_size=16,
+    # gradient_accumulation_steps=2,
+    warmup_steps=100,
+    num_train_epochs=3,
+    learning_rate=2e-5,
+    fp16=not torch.cuda.is_bf16_supported(),
+    bf16=torch.cuda.is_bf16_supported(),
+    logging_steps=10,
+    optim="adamw_8bit",
+    weight_decay=0.01,
+    lr_scheduler_type="linear",
+    seed=3407,
+    save_strategy="epoch",
+    eval_strategy="epoch",
+
+    dataset_num_proc=4,
+    packing=False,
+    dataset_text_field="text",
+)
+trainer = SFTTrainer(
+    model=model,
+    processing_class=tokenizer,
+    train_dataset=train_dataset,
+    eval_dataset=val_dataset,
+    args=sft_config, 
+)
+```
+
+- 尝试**使用大batch来一次推理多个语句**来加快推理速度，但是使用后发现推理产生的`response`**有效比例不高**，于是减少了测试集数据量来替代
+```python
+test_texts = test_dataset['text']
+test_ids = test['id']
+predictions = []
+response_err_cnt = 0
+batch_size = 1 # 最终改回逐个推理
+
+for i in range(0, len(test_texts), batch_size):
+    if i % 256 == 0:
+        print()
+        print(f"Batch {i} Inference")
+    batch = test_texts[i:i + batch_size]
+    prompt = []
+    for review_text in batch:
+        if review_text is None:
+            review_text = ""
+        review_text = str(review_text)
+        reserve_tokens = 30
+        available_len = max_seq_length - len(inference_prompt) - reserve_tokens
+        review_text = review_text[:available_len] if len(review_text) > available_len else review_text
+        prompt.append(inference_prompt.format(review_text))
+    inputs = tokenizer(
+        prompt,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=max_seq_length,
+    ).to(device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=3,
+            eos_token_id=tokenizer.eos_token_id,
+            use_cache=True,
+        )
+    generated_text = tokenizer.batch_decode(outputs, skip_special_tokens=True) # 解码使用batch_decode
+```
+
+### 结果
+| **model** | **mag** | **acc** | **resp_acc** | **acc_bf_train** | **resp_acc_bf_train** |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `unsloth/mistral-7b-instruct-v0.3-bnb-4bit` | 7B | 0.9474 | 1.0 | 0.01 | 0.014 |
+| `unsloth/Qwen3-4B-unsloth-bnb-4bit` | 4B | 0.9150 | 1.0 | 0.556 | 0.578 |
+| `unsloth/Llama-3.2-3B-Instruct-bnb-4bit` | 3B | 0.9050 | 1.0 | 0.478 | 0.55 |
+| `unsloth/Llama-3.2-1B-Instruct-bnb-4bit` | 1B | 0.8560 | 0.996 | 0.292 | 0.466 |
+| `unsloth/Qwen3-1.7B-unsloth-bnb-4bit` | 1.7B | 0.7820 | 0.896 | 0.546 | 0.642 |
+| `unsloth/gemma-3-1b-it-unsloth-bnb-4bit` | 1B | 0.6740 | 0.894 | 0.856 | 1.0 |
+
+- 选择的八个模型中，只有六个模型训练和推理成功，另外两个出现了以下问题：
+`unsloth/gemma-3-4b-it-unsloth-bnb-4bit`：在推理时报错，提示输入prompt为空，尝试使用官方指定的prompt格式进行修改，但仍未解决
+`unsloth/Phi-4-mini-instruct-unsloth-bnb-4bit`：在训练时报错，提示 torch.dynamo的tracing/编译长度超限，尝试修改后仍未解决
+
+#### 总结
+1. **微调后幻觉的比例大大降低，模型越大效果越明显**
+2. **对于较大模型来说微调很有必要，可以把泛化的模型通过微调适应指定领域**
+3. **对于较小的模型微调效果有限，过量的微调还可能导致过拟合**
+4. **`unsloth/gemma-3-1b-it-unsloth-bnb-4bit`** 在微调之前几乎没有幻觉，微调之后反而产生了，可能是训练集过大导致过拟合，也可能是prompt的设计不太适应该模型
+
+
 
 ## 11.25 进度
 - 使用deberta-v3-base + lora完成在不同样本量sst-2上的微调
@@ -55,6 +163,9 @@ test = pd.DataFrame({
 | 样本数 | 16 | 64 | 256 | 1024 | 4096 | 8192 | 16384 | 全量 |
 |--------|------|------|--------|--------|---------|---------|----------|--------|
 | **准确率** | 44.98 | 44.98 | 44.98 | 44.98 | 91.33 | 92.52 | 92.93 | 94.46 |
+
+![alt text](<images/DeBERTa-v3-base + LoRA Accuracy on SST-2.png>)
+
 
 #### 分析
 - **小样本表现异常（16~1024）**：准确率固定在约 44.98%，接近随机猜测水平。
@@ -111,6 +222,8 @@ prompt = prompt_style.format(sentence)
 | **Gemma2-9B** | 90.01 | 90.00 | 90.07 | 89.79 |
 | **Phi-4-mini (3.8B)** | 89.78 | 89.87 | 89.32 | 85.51 |
 | **Mistral-7B** | 85.52 | 85.40 | 85.33 | 84.86 |
+
+![alt text](<images/Ollama Local Models Accuracy on SST-2.png>)
 
 #### 分析 
 - **小样本量时波动较大**：一些模型小幅度高于平均，一些模型全程较为平均

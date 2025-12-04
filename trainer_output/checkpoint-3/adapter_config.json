@@ -1,7 +1,5 @@
 {
-  "alora_invocation_tokens": null,
   "alpha_pattern": {},
-  "arrow_config": null,
   "auto_mapping": {
     "base_model_class": "DebertaV2ForSequenceClassification",
     "parent_library": "transformers.models.deberta_v2.modeling_deberta_v2",
@@ -10,7 +8,6 @@
   "base_model_name_or_path": "./models/microsoft_deberta-v3-base",
   "bias": "none",
   "corda_config": null,
-  "ensure_weight_tying": false,
   "eva_config": null,
   "exclude_modules": null,
   "fan_in_fan_out": false,
@@ -30,7 +27,6 @@
     "score"
   ],
   "peft_type": "LORA",
-  "peft_version": "0.18.0",
   "qalora_group_size": 16,
   "r": 16,
   "rank_pattern": {},

@@ -1,36 +1,27 @@
 import torch
+import triton
+import triton.language as tl
 
-def print_cuda_info():
-    try:
-        print("-" * 40)
-        print("PyTorch CUDA Environment Information:")
-        print("-" * 40)
-        if torch.cuda.is_available():
-            device_count = torch.cuda.device_count()
-            print(f"Number of CUDA devices: {device_count}")
-            if device_count > 0:
-                device_name = torch.cuda.get_device_name(0)
-                print(f"0th CUDA Device Name: {device_name}")
-                total_memory = torch.cuda.get_device_properties(0).total_memory
-                allocated_memory = torch.cuda.memory_allocated(0)
-                free_memory = total_memory - allocated_memory
-                print(f"Total Memory: {total_memory / (1024 ** 3):.2f} GB")
-                print(f"Allocated Memory: {allocated_memory / (1024 ** 3):.2f} GB")
-                print(f"Free Memory: {free_memory / (1024 ** 3):.2f} GB")
-            else:
-                print("No CUDA devices found.")
-        else:
-            print("CUDA is not available.")
-        print("-" * 40)
+@triton.jit
+def add_kernel(x_ptr, y_ptr, output_ptr, n_elements, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    block_start = pid * BLOCK_SIZE
+    offsets = block_start + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < n_elements
+    x = tl.load(x_ptr + offsets, mask=mask)
+    y = tl.load(y_ptr + offsets, mask=mask)
+    output = x + y
+    tl.store(output_ptr + offsets, output, mask=mask)
 
-    except Exception as e:
-        print("-" * 40)
-        print(f"An error occurred: {e}")
-        print("-" * 40)
+def add(x: torch.Tensor, y: torch.Tensor):
+    output = torch.empty_like(x)
+    n_elements = output.numel()
+    grid = lambda meta: (triton.cdiv(n_elements, meta["BLOCK_SIZE"]),)
+    add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)
+    return output
 
-if __name__ == "__main__":
-    print_cuda_info()
-    print("Attempting to import Unsloth...")
-    from unsloth import FastLanguageModel
-
-    print("Unsloth imported successfully.")
+a = torch.rand(3, device="cuda")
+b = a + a
+b_compiled = add(a, a)
+print(b_compiled - b)
+print("If you see tensor([0., 0., 0.], device='cuda:0'), then it works")

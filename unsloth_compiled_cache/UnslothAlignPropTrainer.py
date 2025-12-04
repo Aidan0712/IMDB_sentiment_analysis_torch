@@ -278,7 +278,7 @@ class UnslothAlignPropConfig(AlignPropConfig):
     
     def __init__(
         self,
-        exp_name = 'imdb_modernbert_unsloth',
+        exp_name = 'imdb_instruct_tuning_inference',
         run_name = '',
         seed = 3407,
         log_with = None,
